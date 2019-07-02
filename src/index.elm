@@ -150,7 +150,7 @@ roundish n =
     else if (n < 2) && (n /= toFloat (Basics.round n)) then
         Round.round 0 n
     else
-        Round.round 0 n
+        n |> Round.round 0 |> commaize
 
 
 worldCircumference =
@@ -216,7 +216,7 @@ makeEntry selectedWattHours energyUse =
 
 view : Model -> Html Msg
 view model =
-    div [ css [ width (Css.pct 85), margin auto, color (rgb 14 15 16), fontSize (pt 18), fontFamilies [ "Impact", "Trebuchet MS", "sans-serif" ] ] ]
+    div [ css [ width (Css.pct 90), margin auto, color (rgb 14 15 16), fontSize (pt 18), fontFamilies [ "Impact", "Trebuchet MS", "sans-serif" ] ] ]
         [ p
             []
             [ input
@@ -330,3 +330,25 @@ pluralise name quantity =
         name
     else
         name ++ "s"
+
+
+is3x n =
+    (n |> remainderBy 3) == 0 && n > 0
+
+
+everyThird : Int -> String -> String
+everyThird i a =
+    if is3x i then
+        a ++ ","
+    else
+        a
+
+
+commaize : String -> String
+commaize n =
+    n
+        |> String.split ""
+        |> List.reverse
+        |> List.indexedMap everyThird
+        |> List.reverse
+        |> String.join ""
